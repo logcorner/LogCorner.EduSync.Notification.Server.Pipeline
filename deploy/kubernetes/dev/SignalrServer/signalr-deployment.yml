@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: hub-notification-server-deployment
+  namespace: dev
+  labels:
+    version: 1.0.0
+    product: hub-notification-server
+    environment: dev
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hub-notification-server
+      env: dev
+  
+  template:
+    metadata:
+      labels:
+        app: hub-notification-server
+        env: dev
+    spec:
+      containers:
+      - name: signalrservice-container
+        image: logcornerhub/logcorner-edusync-signalr-server
+        imagePullPolicy: Never
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Kubernetes"
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+          protocol: TCP
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+    

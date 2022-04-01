@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hub-notification-server-ingress
+  namespace: qa
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/websocket-services: "hub-notification-server-service"
+    nginx.ingress.kubernetes.io/affinity: cookie
+
+spec:
+  tls:
+    - hosts:
+      - kubernetes.docker.com
+      secretName: logcorner-ingress-tls
+  rules:
+    - host: kubernetes.docker.com
+      http:
+        paths:
+          - path: /hub-notification-server(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: hub-notification-server-service
+                port:
+                  number: 80
+
+         
