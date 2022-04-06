@@ -1,6 +1,8 @@
+using LogCorner.EduSync.Speech.Telemetry.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LogCorner.EduSync.Notification.Server
 {
@@ -25,7 +27,7 @@ namespace LogCorner.EduSync.Notification.Server
                         var clientSecret = settings["AzureKeyVault:ClientSecret"];
 
                         // Check, if Client ID and Client Secret credentials for a Service Principal
-                        // have been provided. If so, use them to connect, otherwise let the connection 
+                        // have been provided. If so, use them to connect, otherwise let the connection
                         // be done automatically in the background
                         if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(clientSecret))
                             config.AddAzureKeyVault(uri, clientId, clientSecret);
@@ -33,6 +35,13 @@ namespace LogCorner.EduSync.Notification.Server
                             config
                                 .AddAzureKeyVault(uri);
                     }
+                })
+                .ConfigureLogging((context, loggingBuilder) =>
+                {
+                    loggingBuilder.ClearProviders();
+                    loggingBuilder.AddConsole();
+                    loggingBuilder.AddSerilog(context.Configuration);
+                    loggingBuilder.AddOpenTelemetry(context.Configuration);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

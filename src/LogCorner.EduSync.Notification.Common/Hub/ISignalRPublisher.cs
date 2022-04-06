@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LogCorner.EduSync.Notification.Common.Hub
 {
@@ -6,6 +7,6 @@ namespace LogCorner.EduSync.Notification.Common.Hub
     {
         Task SubscribeAsync(string topic);
 
-        Task PublishAsync<T>(string topic, T payload);
+        Task PublishAsync<T>(string topic, IDictionary<string, string> headers, T payload);
     }
 }

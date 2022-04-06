@@ -2,6 +2,7 @@
 using LogCorner.EduSync.Speech.Command.SharedKernel.Serialyser;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogCorner.EduSync.Notification.Common.Hub
@@ -26,7 +27,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
             await _hubInstance.Connection.InvokeAsync(nameof(IHubInvoker<string>.Subscribe), topic);
         }
 
-        public async Task PublishAsync<T>(string topic, T payload)
+        public async Task PublishAsync<T>(string topic, IDictionary<string, string> headers, T payload)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
                 var message = new Message(type, serializedBody);
 
                 await _hubInstance.Connection.InvokeAsync(nameof(IHubInvoker<Message>.PublishToTopic),
-                    topic, message);
+                    topic, headers, message);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 using LogCorner.EduSync.Notification.Server.Hubs;
+using LogCorner.EduSync.Speech.Telemetry.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,20 +26,22 @@ namespace LogCorner.EduSync.Notification.Server
                 var allowedOrigins = Configuration["allowedOrigins"]?.Split(",");
                 options.AddPolicy("corsPolicy",
                     builder =>
-                        builder.AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .WithOrigins(allowedOrigins)
-                            .AllowCredentials()
-                );
+                    {
+                        if (allowedOrigins != null)
+                            builder.AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .WithOrigins(allowedOrigins)
+                                .AllowCredentials();
+                    });
             });
 
             services.AddAuthentication(Configuration);
+            services.AddOpenTelemetry(Configuration);
             services.AddControllers();
             services.AddSignalR(log =>
             {
                 log.EnableDetailedErrors = true;
             });
-           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,7 +81,6 @@ namespace LogCorner.EduSync.Notification.Server
                     endpoints.MapHub<LogCornerHub<object>>("/logcornerhub").RequireAuthorization();
                 }
             });
-            
         }
     }
 }

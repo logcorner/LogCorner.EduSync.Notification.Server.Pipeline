@@ -3,6 +3,7 @@ using LogCorner.EduSync.Speech.Command.SharedKernel.Events;
 using LogCorner.EduSync.Speech.Command.SharedKernel.Serialyser;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogCorner.EduSync.Notification.Common.Hub
@@ -11,7 +12,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
     {
         public event Action<EventStore> ReceivedOnPublish;
 
-        public event Action<string, object> ReceivedOnPublishToTopic;
+        public event Action<string, IDictionary<string, string>, object> ReceivedOnPublishToTopic;
 
         private readonly IHubInstance _hubInstance;
         private readonly IJsonSerializer _eventSerializer;
@@ -39,11 +40,11 @@ namespace LogCorner.EduSync.Notification.Common.Hub
 
         public async Task OnPublish(string topic)
         {
-            _hubInstance.Connection.On<string, Message>(nameof(IHubNotifier<string>.OnPublish),
-                (u, v) =>
+            _hubInstance.Connection.On<string, IDictionary<string, string>, Message>(nameof(IHubNotifier<string>.OnPublish),
+                (subject, header, body) =>
                 {
-                    var payload = _eventSerializer.Deserialize<object>(v.Type, v.Body);
-                    ReceivedOnPublishToTopic?.Invoke(u, payload);
+                    var payload = _eventSerializer.Deserialize<object>(body.Type, body.Body);
+                    ReceivedOnPublishToTopic?.Invoke(subject, header, payload);
                 });
             await Task.CompletedTask;
         }

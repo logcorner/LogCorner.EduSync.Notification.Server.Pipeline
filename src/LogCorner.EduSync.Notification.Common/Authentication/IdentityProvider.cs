@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace LogCorner.EduSync.Notification.Common.Authentication
@@ -22,7 +21,7 @@ namespace LogCorner.EduSync.Notification.Common.Authentication
             {
                 return string.Empty;
             }
-         
+
             var domain = _configuration["AzureAdConfidentialClient:TenantName"];
             string defaultScope = string.Empty;
             if (!string.IsNullOrWhiteSpace(domain))

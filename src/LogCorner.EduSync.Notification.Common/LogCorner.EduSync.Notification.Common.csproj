@@ -21,6 +21,9 @@
     <Reference Include="LogCorner.EduSync.Speech.Command.SharedKernel">
       <HintPath>..\BINARIES\LogCorner.EduSync.Speech.Command.SharedKernel.dll</HintPath>
     </Reference>
+    <Reference Include="LogCorner.EduSync.Speech.Telemetry">
+      <HintPath>..\BINARIES\LogCorner.EduSync.Speech.Telemetry.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   
