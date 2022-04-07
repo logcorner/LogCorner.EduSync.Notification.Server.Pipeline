@@ -60,7 +60,7 @@ namespace LogCorner.EduSync.Notification.Server.Hubs
                 var tags = new Dictionary<string, object>
                 {
                     {"topic", topic },
-                    {"headers", string.Join("|", headers.Select(h=> $"({h.Key},{h.Value})"))} ,
+                   // {"headers", string.Join("|", headers.Select(h=> $"({h.Key},{h.Value})"))} ,
                     {"payload", payload.ToString()}
                 };
                 _traceService.SetActivityTags(activity, tags);
