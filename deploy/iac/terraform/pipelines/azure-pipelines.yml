@@ -1,6 +1,6 @@
 
 trigger:
-  - azure-pipelines-aks-terraform
+  - master
   
 pool:
     name: LOGCORNER-POOL
