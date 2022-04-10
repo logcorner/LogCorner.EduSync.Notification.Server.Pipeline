@@ -58,29 +58,8 @@ stages:
           - task: AzurePowerShell@5
             inputs:
               azureSubscription: 'AzureDevOpsServiceConnection'
-              ScriptType: 'InlineScript'
-              Inline: |
-                Import-AzAksCredential -ResourceGroupName LOGCORNER-MICROSERVICES-IAC -Name demo-apim-aks-test -Force
-                $secretDeployed =  $false
-                $secretName='agic-ingress-tls'
-                try {
-                    $secret =  kubectl get secret  $secretName  -o json  | ConvertFrom-Json  
-                    if ($secret.metadata.name = 'agic-ingress-tls') {
-                        $secretDeployed  = $true
-                        Write-Host "found  $secretDeployed"
-                    }
-                    else {
-                        $secretDeployed =  $false
-                        Write-Host "not found $secretDeployed"
-                    }
-                }
-                catch {
-                    Write-Host "not found $secretDeployed"
-                    $secretDeployed =  $false
-                }
-                if (-not $secretDeployed ){
-                    kubectl create secret tls agic-ingress-tls --namespace default --key agic-ingress-tls.key --cert agic-ingress-tls.crt
-                }
+              ScriptType: 'FilePath'
+              ScriptPath: '$(System.DefaultWorkingDirectory)/iac/terraform/pipelines/scripts/createSecret.ps1'
               azurePowerShellVersion: 'LatestVersion'
               workingDirectory: '$(System.DefaultWorkingDirectory)/deploy/kubernetes/aks-agic-apim/ssl-cerificate'
           - task: Kubernetes@1
