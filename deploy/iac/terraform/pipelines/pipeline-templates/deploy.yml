@@ -61,7 +61,7 @@ stages:
               ScriptType: 'InlineScript'
               Inline: |
                 $secretDeployed =  $false
-                $secretName='agic-ingress-tlsx'
+                $secretName='agic-ingress-tls'
                 try {
                     $secret =  kubectl get secret  $secretName  -o json  | ConvertFrom-Json  
                     if ($secret.metadata.name = 'agic-ingress-tls') {
