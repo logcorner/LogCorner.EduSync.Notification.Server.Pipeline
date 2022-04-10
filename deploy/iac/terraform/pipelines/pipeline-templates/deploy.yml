@@ -59,7 +59,7 @@ stages:
             inputs:
               azureSubscription: 'AzureDevOpsServiceConnection'
               ScriptType: 'FilePath'
-              ScriptPath: '$(System.DefaultWorkingDirectory)/iac/terraform/pipelines/scripts/createSecret.ps1'
+              ScriptPath: '$(System.DefaultWorkingDirectory)/deploy/iac/terraform/pipelines/scripts/createSecret.ps1'
               azurePowerShellVersion: 'LatestVersion'
               workingDirectory: '$(System.DefaultWorkingDirectory)/deploy/kubernetes/aks-agic-apim/ssl-cerificate'
           - task: Kubernetes@1
