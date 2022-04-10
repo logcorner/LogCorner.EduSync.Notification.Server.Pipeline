@@ -24,10 +24,6 @@ Param(
 
 Import-AzAksCredential -ResourceGroupName $ResourceGroupName -Name $clusterName -Force
 $secretDeployed =  $false
-# $secretName='agic-ingress-tls'
-# $namespace ='default'
-# $secretKey ='agic-ingress-tls.key'
-# $secretCert ='agic-ingress-tls.crt'
 try {
     $secret =  kubectl get secret  $secretName  -o json  | ConvertFrom-Json  
     if ($secret.metadata.name = $secretName) {
