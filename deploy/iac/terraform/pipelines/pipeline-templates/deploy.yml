@@ -60,7 +60,7 @@ stages:
               azureSubscription: 'AzureDevOpsServiceConnection'
               ScriptType: 'InlineScript'
               Inline: |
-                az aks get-credentials --resource-group LOGCORNER-MICROSERVICES-IAC --name demo-apim-aks-test
+                Import-AzAksCredential -ResourceGroupName LOGCORNER-MICROSERVICES-IAC -Name demo-apim-aks-test
                 $secretDeployed =  $false
                 $secretName='agic-ingress-tls'
                 try {
