@@ -11,11 +11,16 @@ namespace LogCorner.EduSync.Notification.Common.Hub
 
         private readonly string _url;
         public HubConnection Connection { get; private set; }
+        private readonly ILogger<HubConnectionInstance> _logger;
 
-        public HubConnectionInstance(string url, IIdentityProvider identityProvider)
+        private readonly IRetryPolicy _retryPolicy;
+
+        public HubConnectionInstance(string url, IIdentityProvider identityProvider, ILogger<HubConnectionInstance> logger, IRetryPolicy retryPolicy)
         {
             _url = url;
             _identityProvider = identityProvider;
+            _logger = logger;
+            _retryPolicy = retryPolicy;
         }
 
         public async Task StartAsync()
@@ -33,7 +38,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
                     logging.SetMinimumLevel(LogLevel.Debug);
                 })
 
-               .WithAutomaticReconnect(new RandomRetryPolicy())
+               .WithAutomaticReconnect(_retryPolicy)
                 .Build();
 
             await Connection.StartAsync();

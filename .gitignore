@@ -42,3 +42,4 @@
 /src/LogCorner.EduSync.Notification.Common/bin/Debug
 /deploy/iac/terraform/.vs
 /src/LogCorner.EduSync.Notification.Server/bin/Debug/net6.0
+/src/LogCorner.EduSync.Notification.Server/Logs
