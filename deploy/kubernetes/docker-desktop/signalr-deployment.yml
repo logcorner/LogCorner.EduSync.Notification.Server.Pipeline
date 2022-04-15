@@ -1,34 +1,35 @@
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
 apiVersion: apps/v1
 kind: Deployment
 
 metadata:
   name: hub-notification-server-deployment
-  #namespace: aks
+  #namespace: qa
   labels:
     version: 1.0.0
     product: hub-notification-server
-    environment: aks
+    environment: qa
 
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: hub-notification-server
-      env: aks
+      env: qa
   
   template:
     metadata:
       labels:
         app: hub-notification-server
-        env: aks
+        env: qa
     spec:
       containers:
       - name: signalrservice-container
-        image: logcornerhub/logcorner-edusync-notification-server
-        imagePullPolicy: Always
+        image: logcornerhub/logcorner-edusync-notification-server 
+        imagePullPolicy: IfNotPresent
         env:
         - name: ASPNETCORE_ENVIRONMENT
-          value: "Kubernetes.AKS"
+          value: "Kubernetes.qa"
         ports:
         - containerPort: 80
         - containerPort: 443
@@ -36,6 +37,4 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
-      # imagePullSecrets:
-      #  - name: regsecret 
     

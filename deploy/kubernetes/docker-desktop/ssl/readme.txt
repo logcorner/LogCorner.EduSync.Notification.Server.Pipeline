@@ -1,0 +1,1 @@
+kubectl create secret tls logcorner-ingress-tls --namespace default --key logcorner-ingress-tls.key --cert logcorner-ingress-tls.crt
