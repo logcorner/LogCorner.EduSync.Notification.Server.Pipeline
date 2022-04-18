@@ -1,4 +1,4 @@
-²{
+{
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -62,9 +62,7 @@
   },
 
   "AzureKeyVault": {
-    
-    "tenantId": "f12a747a-cddf-4426-96ff-ebe055e215a3",
-    "Uri": "https://logcornervaultdaemonapp.vault.azure.net/",
+    "Uri": "https://logcornervaultwebsocket.vault.azure.net/",
     "ClientId": "5c4919f0-7d40-40ec-837c-8a6a73c47ed3",
     "ClientSecret": "~ww7Q~GWr8asRW9oXsSqd52NXLnFNFpiUafoC"
   },

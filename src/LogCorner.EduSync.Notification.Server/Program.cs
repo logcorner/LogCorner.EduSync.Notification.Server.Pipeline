@@ -1,8 +1,10 @@
+using System;
 using LogCorner.EduSync.Speech.Telemetry.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Azure.Identity;
 
 namespace LogCorner.EduSync.Notification.Server
 {
@@ -18,23 +20,23 @@ namespace LogCorner.EduSync.Notification.Server
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var settings = config.Build();
-                    bool.TryParse(settings["isAuthenticationEnabled"], out var isAuthenticationEnabled);
+                    
+                    bool.TryParse((ReadOnlySpan<char>)settings["isAuthenticationEnabled"], out var isAuthenticationEnabled);
                     if (!context.HostingEnvironment.IsDevelopment() && isAuthenticationEnabled)
                     {
                         // Configure Azure Key Vault Connection
                         var uri = settings["AzureKeyVault:Uri"];
+                        var tenantId = settings["AzureKeyVault:tenantId"];
                         var clientId = settings["AzureKeyVault:ClientId"];
                         var clientSecret = settings["AzureKeyVault:ClientSecret"];
+                        if (!string.IsNullOrWhiteSpace(uri))
 
-                        // Check, if Client ID and Client Secret credentials for a Service Principal
-                        // have been provided. If so, use them to connect, otherwise let the connection
-                        // be done automatically in the background
-                        if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(clientSecret))
-                            config.AddAzureKeyVault(uri, clientId, clientSecret);
-                        else
-                            config
-                                .AddAzureKeyVault(uri);
+                            config.AddAzureKeyVault(
+                                new Uri(uri),
+                                new ClientSecretCredential(tenantId, clientId, clientSecret)
+                            );
                     }
+                
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {

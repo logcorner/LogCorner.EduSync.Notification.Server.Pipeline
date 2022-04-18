@@ -19,8 +19,8 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="1.23.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.23" />
+	  <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
+	  <PackageReference Include="Azure.Identity" Version="1.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <!--SERILOG-->
     <PackageReference Include="Serilog" Version="2.10.0" />
