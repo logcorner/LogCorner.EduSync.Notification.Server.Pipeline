@@ -13,7 +13,7 @@ variables:
     - name: BUILD_NUMBER
       value: '$(Build.BuildId)'
     - name: ACR_NAME
-      value: 'locornermsacrtest'
+      value: 'logcorneracrtest'
 stages:
     - template: pipeline-templates/build.yml
       parameters:
