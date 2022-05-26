@@ -1,3 +1,4 @@
+using LogCorner.EduSync.Notification.Common.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,10 @@ namespace LogCorner.EduSync.Notification.Server
     {
         public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            bool.TryParse(configuration["isAuthenticationEnabled"], out var isAuthenticationEnabled);
+            if (!bool.TryParse(configuration["isAuthenticationEnabled"], out var isAuthenticationEnabled))
+            {
+                throw new NotificationServerException("isAuthenticationEnabled property should be configured appSettings");
+            }
             if (!isAuthenticationEnabled)
             {
                 return;

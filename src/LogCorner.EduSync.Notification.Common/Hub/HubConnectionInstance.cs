@@ -11,15 +11,14 @@ namespace LogCorner.EduSync.Notification.Common.Hub
 
         private readonly string _url;
         public HubConnection Connection { get; private set; }
-        private readonly ILogger<HubConnectionInstance> _logger;
 
         private readonly IRetryPolicy _retryPolicy;
 
-        public HubConnectionInstance(string url, IIdentityProvider identityProvider, ILogger<HubConnectionInstance> logger, IRetryPolicy retryPolicy)
+        public HubConnectionInstance(string url, IIdentityProvider identityProvider, IRetryPolicy retryPolicy)
         {
             _url = url;
             _identityProvider = identityProvider;
-            _logger = logger;
+
             _retryPolicy = retryPolicy;
         }
 
@@ -28,10 +27,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
             var accessToken = await InitConfidentialClientAsync();
 
             Connection = new HubConnectionBuilder()
-                .WithUrl(_url, options =>
-                {
-                    options.AccessTokenProvider = () => Task.FromResult(accessToken);
-                })
+                .WithUrl(_url, options => options.AccessTokenProvider = () => Task.FromResult(accessToken))
                 .ConfigureLogging(logging =>
                 {
                     // This will set ALL logging to Debug level
@@ -54,8 +50,7 @@ namespace LogCorner.EduSync.Notification.Common.Hub
 
         private async Task<string> InitConfidentialClientAsync()
         {
-            var accessToken = await _identityProvider.AcquireTokenForConfidentialClient();
-            return accessToken;
+            return await _identityProvider.AcquireTokenForConfidentialClient();
         }
     }
 }

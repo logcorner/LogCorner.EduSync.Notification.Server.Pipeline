@@ -1,14 +1,15 @@
-using System;
+using Azure.Identity;
+using LogCorner.EduSync.Notification.Common.Exceptions;
 using LogCorner.EduSync.Speech.Telemetry.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Azure.Identity;
+using System;
 
 namespace LogCorner.EduSync.Notification.Server
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -20,8 +21,11 @@ namespace LogCorner.EduSync.Notification.Server
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var settings = config.Build();
-                    
-                    bool.TryParse((ReadOnlySpan<char>)settings["isAuthenticationEnabled"], out var isAuthenticationEnabled);
+
+                    if (!bool.TryParse(settings["isAuthenticationEnabled"], out var isAuthenticationEnabled))
+                    {
+                        throw new NotificationServerException("isAuthenticationEnabled property should be configured appSettings");
+                    }
                     if (!context.HostingEnvironment.IsDevelopment() && isAuthenticationEnabled)
                     {
                         // Configure Azure Key Vault Connection
@@ -36,7 +40,6 @@ namespace LogCorner.EduSync.Notification.Server
                                 new ClientSecretCredential(tenantId, clientId, clientSecret)
                             );
                     }
-                
                 })
                 .ConfigureLogging((context, loggingBuilder) =>
                 {

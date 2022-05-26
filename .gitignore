@@ -44,3 +44,4 @@
 /src/LogCorner.EduSync.Notification.Server/bin/Debug/net6.0
 /src/LogCorner.EduSync.Notification.Server/Logs
 /src/.vs/ProjectEvaluation
+/src/.sonarqube

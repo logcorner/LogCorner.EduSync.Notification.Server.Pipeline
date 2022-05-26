@@ -1,4 +1,5 @@
-﻿using LogCorner.EduSync.Notification.Common.Hub;
+﻿using LogCorner.EduSync.Notification.Common.Exceptions;
+using LogCorner.EduSync.Notification.Common.Hub;
 using LogCorner.EduSync.Speech.Telemetry;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -13,11 +14,11 @@ namespace LogCorner.EduSync.Notification.Server.Hubs
 {
     public class LogCornerHub<T> : Hub<IHubNotifier<T>>, IHubInvoker<T> where T : class
     {
-        private static readonly ActivitySource Activity = new("notification-server");
-        private static readonly TextMapPropagator Propagator = new TraceContextPropagator();
+        private readonly ActivitySource _activity = new("notification-server");
+        private readonly TextMapPropagator _propagator = new TraceContextPropagator();
         private Client Client => GetClientName();
 
-        private ITraceService _traceService;
+        private readonly ITraceService _traceService;
         private readonly ILogger<LogCornerHub<T>> _logger;
 
         public LogCornerHub(ITraceService traceService, ILogger<LogCornerHub<T>> logger)
@@ -53,23 +54,20 @@ namespace LogCorner.EduSync.Notification.Server.Hubs
 
         public async Task PublishToTopic(string topic, IDictionary<string, string> headers, T payload)
         {
-            var parentContext = Propagator.Extract(default, headers, _traceService.ExtractTraceContextFromBasicProperties);
+            var parentContext = _propagator.Extract(default, headers, _traceService.ExtractTraceContextFromBasicProperties);
             Baggage.Current = parentContext.Baggage;
 
-            using (var activity =
-                   Activity.StartActivity("Process Message", ActivityKind.Server, parentContext.ActivityContext))
+            using var activity =
+                _activity.StartActivity("Process Message", ActivityKind.Server, parentContext.ActivityContext);
+            var tags = new Dictionary<string, object>
             {
-                var tags = new Dictionary<string, object>
-                {
-                    {"topic", topic },
-                   // {"headers", string.Join("|", headers.Select(h=> $"({h.Key},{h.Value})"))} ,
-                    {"payload", payload.ToString()}
-                };
-                _traceService.SetActivityTags(activity, tags);
-                await Clients.All.OnPublish(topic, headers, payload);
-                _logger.LogInformation(
-                   $"PublishToTopic :: topic : {topic} , payload : {payload}, clientId : {Context.ConnectionId}, clientName :{Client.ClientName}, User : {Client.ConnectedUser}  - {DateTime.UtcNow:MM/dd/yyyy hh:mm:ss.fff tt}");
-            }
+                {"topic", topic },
+               {"payload", payload.ToString()}
+            };
+            _traceService.SetActivityTags(activity, tags);
+            await Clients.All.OnPublish(topic, headers, payload);
+            _logger.LogInformation(
+                $"PublishToTopic :: topic : {topic} , payload : {payload}, clientId : {Context.ConnectionId}, clientName :{Client.ClientName}, User : {Client.ConnectedUser}  - {DateTime.UtcNow:MM/dd/yyyy hh:mm:ss.fff tt}");
         }
 
         public async Task UnSubscribe(string topic)
@@ -86,7 +84,7 @@ namespace LogCorner.EduSync.Notification.Server.Hubs
             var clientName = httpContext?.Request.Query["clientName"];
             if (string.IsNullOrWhiteSpace(clientName))
             {
-                throw new Exception($"clientName is required ** OnConnectedAsync :: clientId : {Context.ConnectionId}");
+                throw new HubConnectedUserException($"clientName is required ** OnConnectedAsync :: clientId : {Context.ConnectionId}");
             }
             return new Client(httpContext, clientName);
         }

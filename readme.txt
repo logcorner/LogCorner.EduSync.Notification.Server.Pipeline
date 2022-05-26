@@ -31,3 +31,8 @@ kubectl create secret tls logcorner-ingress-tls --namespace qa --key logcorner-i
 
 https://kubernetes.docker.com/hub-notification-server/logcornerhub
 
+sonarqube
+
+dotnet sonarscanner begin /k:"LogCorner.EduSync.Notification.Server.Pipeline" /d:sonar.host.url="http://localhost:9000"  /d:sonar.login="c0c5185e46364857299f1a98c6af4b4554fc73fa"
+dotnet sonarscanner end /d:sonar.login="c0c5185e46364857299f1a98c6af4b4554fc73fa"
+
