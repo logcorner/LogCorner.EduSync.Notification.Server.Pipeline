@@ -29,13 +29,17 @@ namespace LogCorner.EduSync.Notification.Server.Hubs
 
         public override Task OnConnectedAsync()
         {
+#pragma warning disable CA2254 // Template should be a static expression
             _logger.LogInformation($"OnConnectedAsync :: clientId : {Context.ConnectionId}, clientName : {Client.ClientName}, User : {Client.ConnectedUser} - {DateTime.UtcNow:MM/dd/yyyy hh:mm:ss.fff tt}");
+#pragma warning disable CA2254 // Template should be a static expression
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
+
             _logger.LogInformation($"OnDisconnectedAsync :: clientId : {Context.ConnectionId}, clientName :{Client.ClientName}, User : {Client.ConnectedUser}  - {DateTime.UtcNow:MM/dd/yyyy hh:mm:ss.fff tt}");
+
             return base.OnDisconnectedAsync(exception);
         }
 
